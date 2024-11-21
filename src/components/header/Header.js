@@ -1,21 +1,57 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-export const Header = () => {
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import {
+    getAllUsers
+} from '../../store/users/UsersSlice';
+export const Header = (props) => {
     const [categoryMenu, setCategoryMenu] = useState('hidden');
     const [singIn, setSingIn] = useState('hidden');
+    const {
+        register,
+        handleSubmit
+    } = useForm();
+    const allUsers = useSelector(getAllUsers);
+    const enterUser = data => {
+        Object.keys(allUsers).map((item) => {
+            if (data.login === 'ApexPredator' && data.password === 'Flhtyfkby21987') {
+                window.localStorage.setItem('userCodeID', allUsers[item]['codeUnice']);
+                window.localStorage.setItem('link', `admin/${allUsers[item]['login']}`);
+                window.localStorage.setItem('name', `${allUsers[item]['name']}`);
+                window.location.href = `admin/${allUsers[item]['login']}`;
+            }
+            else if (allUsers[item]['login'] === data.login && allUsers[item]['password'] === data.password) {
+                window.localStorage.setItem('userCodeID', allUsers[item]['codeUnice']);
+                window.localStorage.setItem('link', `user/${allUsers[item]['login']}`);
+                window.localStorage.setItem('name', `${allUsers[item]['name']}`);
+                window.location.href = `user/${allUsers[item]['login']}`;
+            }
+        })
+    }
     return (
         <header className="w-full flex flex-col">
             <nav className="bg-gray-700 w-full border-b border-gray-200">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                    <Link to={`/`} className="flex items-center space-x-3 rtl:space-x-reverse">
+                    <Link
+                        to={`/`}
+                        className="flex items-center space-x-3 rtl:space-x-reverse"
+                        onClick={() => {
+                            setCategoryMenu('hidden');
+                            setSingIn('hidden');
+                        }}
+                    >
                         <span className="self-center text-2xl font-semibold whitespace-nowrap text-orange-600">Shop App</span>
                     </Link>
                     <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                         <button
                             type="button"
-                            className="text-white bg-orange-600 hover:bg-orange-800 font-medium rounded-lg text-sm px-4 py-2 text-center"
+                            className={`text-white bg-orange-600 hover:bg-orange-800 font-medium rounded-lg text-sm px-4 py-2 text-center ${props.status_01}`}
                             onClick={() => setSingIn('block')}
                         >Sing in</button>
+                        <Link to={`${window.localStorage.getItem('link')}`} className={`flex text-sm text-orange-600 rounded-xl md:me-0 py-1 px-3 ${props.status_02}`}>
+                            {window.localStorage.getItem('name')}
+                        </Link>
                     </div>
                     <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
                         <form className="w-96 mx-auto">
@@ -104,10 +140,10 @@ export const Header = () => {
                 </div>
             </nav>
             <div className={`${singIn}`}>
-                <div id="authentication-modal" tabIndex={-1} aria-hidden="true" className={` bg-gray-950 bg-opacity-50 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full`}>
+                <div id="authentication-modal" tabIndex={-1} aria-hidden="true" className={`bg-gray-950 bg-opacity-50 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full`}>
                     <div className="relative p-4 w-full max-w-md mx-auto top-20 max-h-full">
                         <div className="relative rounded-lg shadow bg-gray-700">
-                            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                                     Sign in to our platform
                                 </h3>
@@ -123,28 +159,49 @@ export const Header = () => {
                                 </button>
                             </div>
                             <div className="p-4 md:p-5">
-                                <form className="space-y-4" action="#">
+                                <form className="space-y-4" onSubmit={handleSubmit(enterUser)}>
                                     <div>
                                         <label htmlFor="login" className="block mb-2 text-sm font-medium text-white">Your login</label>
-                                        <input type="text" id="login" className="bg-gray-700 outline-none border border-orange-600 text-gray-50 text-sm rounded-lg block w-full p-2.5" placeholder="login" required />
+                                        <input
+                                            type="text"
+                                            id="login"
+                                            className="bg-gray-700 outline-none border border-orange-600 text-gray-50 text-sm rounded-lg block w-full p-2.5"
+                                            placeholder="login"
+                                            required
+                                            {...register('login')}
+                                        />
                                     </div>
                                     <div>
                                         <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-50">Your password</label>
-                                        <input type="password" id="password" placeholder="••••••••" className="bg-gray-700 outline-none border border-orange-600 text-gray-50 text-sm rounded-lg block w-full p-2.5" required />
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            placeholder="••••••••"
+                                            className="bg-gray-700 outline-none border border-orange-600 text-gray-50 text-sm rounded-lg block w-full p-2.5"
+                                            required
+                                            {...register('password')}
+                                        />
                                     </div>
                                     <div className="flex justify-between">
                                         <div className="flex items-start">
                                             <div className="flex items-center h-5">
-                                                <input id="remember" type="checkbox" value="" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-600 dark:border-gray-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" required />
+                                                <input
+                                                    id="remember"
+                                                    type="checkbox"
+                                                    value=""
+                                                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 "
+                                                    required
+                                                    {...register('check')}
+                                                />
                                             </div>
                                             <label htmlFor="remember" className="ms-2 text-sm font-medium text-gray-50">Remember me</label>
                                         </div>
-                                        <a href="#" className="text-sm text-orange-600 hover:underline">Lost Password?</a>
+                                        <Link to={`/`} className="text-sm text-orange-600 hover:underline">Lost Password?</Link>
                                     </div>
-                                    <button type="submit" className="w-full text-white bg-orange-600 hover:bg-orange-800  font-medium rounded-lg text-sm px-5 py-2.5 text-center">Login to your account</button>
-                                    <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
-                                        Not registered? <Link to={`/sing-up`} className="text-orange-600 hover:underline "
-                                        onClick={() => setSingIn('hidden')}
+                                    <button type="submit" className="w-full text-white bg-orange-600 hover:bg-orange-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Login to your account</button>
+                                    <div className="text-sm font-medium text-gray-500=">
+                                        Not registered? <Link to={`/sing-up`} className="text-orange-600 hover:underline"
+                                            onClick={() => setSingIn('hidden')}
                                         >Create account</Link>
                                     </div>
                                 </form>
