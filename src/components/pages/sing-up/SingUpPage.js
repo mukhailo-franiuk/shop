@@ -162,16 +162,19 @@ export const SingUpPage = () => {
                         <button
                             className="py-2 px-3 text-sm font-medium text-center text-white rounded-lg bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:focus:ring-primary-900"
                             onClick={() => {
-                                Object.keys(usersLength).map(item =>{ 
+                                Object.keys(usersLength).map(item => {
                                     if (window.localStorage.getItem('userCodeID') === usersLength[item]['codeUnice']) {
-                                        window.location.href = `user/${usersLength[item]['login']}`;
+                                        window.localStorage.setItem('userCodeID', usersLength[item]['codeUnice']);
+                                        window.localStorage.setItem('link', `user/${usersLength[item]['login']}`);
+                                        window.localStorage.setItem('name', `${usersLength[item]['name']}`);
+                                        window.location.href = `user/${usersLength[item]['login']}/info`;
                                         setShowReg('block');
                                         setShowStatus('hidden');
                                     }
                                     else {
                                         return
                                     }
-                            })
+                                })
                             }}
                         >
                             Continue

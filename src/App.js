@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { User } from "./components/user-panel/User";
 import { Admin } from "./components/admin-panel/Admin";
+import { Overview } from "./components/admin-panel/overview/Overview";
 function App() {
   const [status_01, setStatus_01] = useState('block');
   const [status_02, setStatus_02] = useState('hidden');
@@ -24,14 +25,15 @@ function App() {
       dispatch(getAll(snapshot.val()));
     })
   },[]);
-  useEffect(() => {
+
+  useEffect(()=>{
     Object.keys(users).map(item => {
       if (users[item]['codeUnice'] === window.localStorage.getItem('userCodeID')) {
         setStatus_01('hidden');
         setStatus_02('block');
       }
     })
-})
+  })
   return (
     <div className="w-full">
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -39,8 +41,8 @@ function App() {
         <Routes>
           <Route path="" element={<HomePage />} />
           <Route path="sing-up" element={<SingUpPage />} />
-          <Route path="admin/:login" element={<Admin />} />
-          <Route path="user/:name" element={<User />} />
+          <Route path="admin/:login/*" element={<Admin />} />
+          <Route path="user/:name/*" element={<User />} />
         </Routes>
       </Router>
     </div>

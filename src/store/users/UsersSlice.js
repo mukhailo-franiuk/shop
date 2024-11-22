@@ -13,7 +13,6 @@ export const usersSlice = createSlice({
         uniceCode : (state , data) => {
             state.code = data.payload;
             window.localStorage.setItem('userCodeID' , state.code);
-            state.code = '';
         }
     }
 });

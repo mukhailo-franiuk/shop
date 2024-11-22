@@ -15,17 +15,17 @@ export const Header = (props) => {
     const allUsers = useSelector(getAllUsers);
     const enterUser = data => {
         Object.keys(allUsers).map((item) => {
-            if (data.login === 'ApexPredator' && data.password === 'Flhtyfkby21987') {
+            if (data.login === 'ApexPredator' && data.password === 'Flhtyfkby21987' && allUsers[item]['userID'] === 'prime') {
                 window.localStorage.setItem('userCodeID', allUsers[item]['codeUnice']);
                 window.localStorage.setItem('link', `admin/${allUsers[item]['login']}`);
                 window.localStorage.setItem('name', `${allUsers[item]['name']}`);
-                window.location.href = `admin/${allUsers[item]['login']}`;
+                window.location.href = `admin/${allUsers[item]['login']}/overview`;
             }
-            else if (allUsers[item]['login'] === data.login && allUsers[item]['password'] === data.password) {
+            if (allUsers[item]['login'] === data.login && allUsers[item]['password'] === data.password && allUsers[item]['userID'] === 'user') {
                 window.localStorage.setItem('userCodeID', allUsers[item]['codeUnice']);
                 window.localStorage.setItem('link', `user/${allUsers[item]['login']}`);
                 window.localStorage.setItem('name', `${allUsers[item]['name']}`);
-                window.location.href = `user/${allUsers[item]['login']}`;
+                window.location.href = `user/${allUsers[item]['login']}/info`;
             }
         })
     }
@@ -49,7 +49,7 @@ export const Header = (props) => {
                             className={`text-white bg-orange-600 hover:bg-orange-800 font-medium rounded-lg text-sm px-4 py-2 text-center ${props.status_01}`}
                             onClick={() => setSingIn('block')}
                         >Sing in</button>
-                        <Link to={`${window.localStorage.getItem('link')}`} className={`flex text-sm text-orange-600 rounded-xl md:me-0 py-1 px-3 ${props.status_02}`}>
+                        <Link to={`${window.localStorage.getItem('link')}/overview`} className={`flex text-sm text-orange-600 rounded-xl md:me-0 py-1 px-3 ${props.status_02}`}>
                             {window.localStorage.getItem('name')}
                         </Link>
                     </div>
